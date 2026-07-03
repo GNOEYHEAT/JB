@@ -210,9 +210,9 @@ Part 1의 목표는 AI Agent 서비스를 “그럴듯한 아이디어”에서 
 
 ### 6.1 Harness Engineering 개념 이해
 
-먼저 Harness Engineering이 무엇인지 이해합니다.
+> 이번 단계에서 할 일: 왜 “프롬프트 한 번”이 아니라 “작업 환경 설계”가 필요한지 이해합니다.
 
-단순히 AI에게 “서비스 만들어줘”라고 요청하면 결과물은 한 번 생성되고 끝납니다. 반면 Harness Engineering은 AI Agent가 일하는 환경 자체를 설계합니다. 즉, 어떤 에이전트가 어떤 역할을 맡고, 어떤 순서로 검증하며, 문제가 생기면 어떻게 다시 개선할지를 정합니다.
+AI에게 “서비스 만들어줘”라고 한 번 요청하면 결과물은 그 한 번으로 끝납니다. 반면 Harness Engineering은 AI Agent가 일하는 환경 자체를 설계합니다. 즉, **어떤 에이전트가 어떤 역할을 맡고, 어떤 순서로 검증하며, 문제가 생기면 어떻게 다시 개선할지**를 미리 정합니다.
 
 | 구분 | 설명 | 실습 예시 |
 |---|---|---|
@@ -221,7 +221,7 @@ Part 1의 목표는 AI Agent 서비스를 “그럴듯한 아이디어”에서 
 | Skill | 반복 가능한 작업 절차 | 명세서 일관성 검토, 리스크 점검, 테스트 시나리오 생성 |
 | Harness | Agent와 Skill을 묶은 작업 시스템 | Compliance AI를 반복 검증하고 고도화하는 구조 |
 
-읽어볼 자료:
+읽어 보면 좋은 자료:
 
 - Harness Engineering 설명: <https://revfactory.github.io/ai-trend-onboarding/ch6.html>
 - Harness 플러그인: <https://github.com/revfactory/harness>
