@@ -56,7 +56,7 @@ Claude Code로 AI Agent 서비스의 가장 작은 MVP를 만들고, Harness로 
 | MVP 소스 코드 | 가장 작은 형태로 동작하는 AI Agent 서비스 코드 | `src/`, `app.py`, `package.json` 등 |
 | Harness 구성 | 서비스 검증·개선용 에이전트, 스킬, 오케스트레이션 규칙 | `.claude/agents/`, `.claude/skills/` |
 | 발표 자료 제작 기준 문서 | Codex가 참고할 발표 목적, 평가 기준, 디자인 기준, 작업 규칙 | `AGENTS.md`, `brand/DESIGN.md`, `context/*.md` |
-| 심사위원용 PPT | 편집 가능한 PowerPoint 제안서 | `output/presentation.pptx`, `output/presentation-v2.pptx` |
+| 발표 자료 PPT | 편집 가능한 PowerPoint 제안서 | `output/presentation.pptx`, `output/presentation-v2.pptx` |
 | 렌더 검수 이미지 | 슬라이드별 PNG와 전체 montage 이미지 | `output/rendered/`, `output/review-montage.png` |
 | 최종 검수 요약 | 글자 잘림, 객체 겹침, 민감정보, 출처, 발표 모드 확인 결과 | Codex 응답 또는 `output/review-report.md` |
 
