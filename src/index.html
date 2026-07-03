@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Compliance AI — 준법자문가 AI Agent</title>
+<style>
+  :root { --navy:#0d2a4a; --blue:#1f5fa8; --line:#e2e8f0; --bg:#f4f6fa;
+          --hi:#c62828; --mid:#e08600; --lo:#2e7d32; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:"Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+         background:var(--bg); color:#1a2233; }
+  header { background:var(--navy); color:#fff; padding:16px 24px; }
+  header h1 { margin:0; font-size:20px; }
+  header p { margin:4px 0 0; font-size:12px; opacity:.8; }
+  .tabs { display:flex; flex-wrap:wrap; gap:4px; background:#fff;
+          padding:8px 16px; border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+  .tab { padding:8px 14px; border:none; background:transparent; cursor:pointer;
+         font-size:14px; border-radius:6px; color:#4a5568; }
+  .tab.active { background:var(--blue); color:#fff; font-weight:bold; }
+  main { max-width:900px; margin:20px auto; padding:0 16px; }
+  .panel { display:none; background:#fff; border:1px solid var(--line);
+           border-radius:10px; padding:20px; }
+  .panel.active { display:block; }
+  h2 { margin-top:0; font-size:17px; color:var(--navy); }
+  .hint { font-size:12px; color:#718096; margin-bottom:12px; }
+  textarea, input, select { width:100%; padding:10px; border:1px solid var(--line);
+           border-radius:6px; font-size:14px; font-family:inherit; }
+  textarea { min-height:90px; resize:vertical; }
+  .row { display:flex; gap:8px; align-items:center; margin-bottom:10px; }
+  button.go { background:var(--blue); color:#fff; border:none; padding:10px 18px;
+              border-radius:6px; cursor:pointer; font-size:14px; white-space:nowrap; }
+  button.go:hover { background:#17497f; }
+  .result { margin-top:16px; }
+  .card { border:1px solid var(--line); border-radius:8px; padding:12px 14px; margin:10px 0; }
+  .badge { display:inline-block; padding:2px 10px; border-radius:12px; font-size:12px;
+           font-weight:bold; color:#fff; }
+  .b-hi { background:var(--hi); } .b-mid { background:var(--mid); } .b-lo { background:var(--lo); }
+  pre { white-space:pre-wrap; word-break:break-word; font-family:inherit; font-size:13px;
+        background:#f8fafc; padding:12px; border-radius:6px; margin:8px 0; }
+  .src { font-size:12px; color:#2b6cb0; }
+  .finding { border-left:4px solid var(--hi); padding-left:10px; margin:8px 0; }
+  .finding.medium { border-color:var(--mid); }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th, td { border:1px solid var(--line); padding:8px; text-align:left; vertical-align:top; }
+  th { background:#f1f5f9; }
+  .muted { color:#94a3b8; font-size:12px; }
+  label.chk { display:flex; gap:8px; align-items:flex-start; padding:6px 0; }
+  .req { color:var(--hi); font-size:11px; }
+  .small { font-size:12px; padding:6px 10px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Compliance AI · 준법자문가 AI Agent</h1>
+  <p>JB금융그룹 AX전략부 | 전북은행·광주은행·JB우리캐피탈 공통 | MVP 프로토타입</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-tab="qa">① 법규 질의응답</button>
+  <button class="tab" data-tab="copy">② 문구 사전검토</button>
+  <button class="tab" data-tab="check">③ 준법 체크리스트</button>
+  <button class="tab" data-tab="mon">④ 규제 모니터링</button>
+  <button class="tab" data-tab="queue">⑤ 준법감시인 검토</button>
+  <button class="tab" data-tab="audit">⑥ 감사증적</button>
+</nav>
+
+<main>
+  <!-- ① 질의응답 -->
+  <section class="panel active" id="qa">
+    <h2>① 자연어 법규·내부규정 질의응답 (RAG)</h2>
+    <p class="hint">법령·내부규정에 대해 자연어로 질문하세요. 근거 조항과 리스크 등급이 함께 제공되며, 고위험 사안은 준법감시인 검토로 자동 라우팅됩니다.</p>
+    <textarea id="qa-input" placeholder="예) 대출을 조건으로 예금 가입을 권유해도 되나요?">대출을 조건으로 예금 가입을 권유해도 되나요?</textarea>
+    <div class="row" style="margin-top:8px;"><button class="go" onclick="doQuery()">질의하기</button></div>
+    <div class="result" id="qa-result"></div>
+  </section>
+
+  <!-- ② 문구 사전검토 -->
+  <section class="panel" id="copy">
+    <h2>② 광고·상품 문구 사전검토</h2>
+    <p class="hint">광고/상품 문구를 입력하면 표시광고법·금소법 위반 소지를 자동 탐지하고 수정안을 제안합니다.</p>
+    <textarea id="copy-input" placeholder="광고 문구를 입력하세요">누구나 무조건 승인! 업계 최저금리, 원금보장 확정수익 펀드에 지금 가입하세요.</textarea>
+    <div class="row" style="margin-top:8px;"><button class="go" onclick="doCopy()">문구 검토</button></div>
+    <div class="result" id="copy-result"></div>
+  </section>
+
+  <!-- ③ 체크리스트 -->
+  <section class="panel" id="check">
+    <h2>③ 준법 체크리스트 자동생성</h2>
+    <p class="hint">거래 유형을 선택하면 필수 준수사항 체크리스트를 자동 생성합니다.</p>
+    <div class="row">
+      <select id="check-type" style="max-width:200px">
+        <option>여신</option><option>수신</option><option>투자상품</option>
+      </select>
+      <button class="go" onclick="doChecklist()">체크리스트 생성</button>
+    </div>
+    <div class="result" id="check-result"></div>
+  </section>
+
+  <!-- ④ 규제 모니터링 -->
+  <section class="panel" id="mon">
+    <h2>④ 규제 변경 모니터링·알림</h2>
+    <p class="hint">금융위·금감원 등의 법령 개정·유권해석·제재사례를 상시 모니터링합니다.</p>
+    <div class="row">
+      <select id="mon-dept" style="max-width:200px">
+        <option value="">전체 부서</option><option>영업점</option><option>마케팅</option>
+        <option>상품개발</option><option>준법감시</option>
+      </select>
+      <button class="go" onclick="doUpdates()">조회</button>
+    </div>
+    <div class="result" id="mon-result"></div>
+  </section>
+
+  <!-- ⑤ 검토 큐 -->
+  <section class="panel" id="queue">
+    <h2>⑤ 준법감시인 검토 라우팅 (Human-in-the-loop)</h2>
+    <p class="hint">고위험으로 판정된 사안이 이곳으로 라우팅됩니다. 근거를 확인하고 승인/반려 처리하세요. (①②에서 고위험 사례를 실행하면 항목이 쌓입니다.)</p>
+    <div class="row"><button class="go small" onclick="doQueue()">새로고침</button></div>
+    <div class="result" id="queue-result"></div>
+  </section>
+
+  <!-- ⑥ 감사증적 -->
+  <section class="panel" id="audit">
+    <h2>⑥ 감사증적(Audit Trail) 자동 기록</h2>
+    <p class="hint">모든 질의·응답·검토·승인 이력이 자동 기록됩니다. (감사 및 금융당국 대응 자료)</p>
+    <div class="row"><button class="go small" onclick="doAudit()">새로고침</button></div>
+    <div class="result" id="audit-result"></div>
+  </section>
+</main>
+
+<script>
+// ------- 탭 전환 -------
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => {
+  document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+  document.querySelectorAll(".panel").forEach(x => x.classList.remove("active"));
+  t.classList.add("active");
+  document.getElementById(t.dataset.tab).classList.add("active");
+  if (t.dataset.tab === "queue") doQueue();
+  if (t.dataset.tab === "audit") doAudit();
+  if (t.dataset.tab === "mon") doUpdates();
+});
+
+async function post(url, body){ const r = await fetch(url,{method:"POST",
+  headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}); return r.json(); }
+async function get(url){ const r = await fetch(url); return r.json(); }
+
+function riskBadge(risk){
+  const cls = risk.level==="고위험"?"b-hi":risk.level==="중위험"?"b-mid":"b-lo";
+  return `<span class="badge ${cls}">${risk.level} · ${risk.score}점</span>`;
+}
+function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+// ------- ① 질의응답 -------
+async function doQuery(){
+  const q = document.getElementById("qa-input").value.trim();
+  if(!q) return;
+  const box = document.getElementById("qa-result"); box.innerHTML = "조회 중...";
+  const d = await post("/api/query", {query:q});
+  let routed = d.routed_queue_id ? `<p style="color:var(--hi)">⚠ 고위험 사안으로 판정되어 준법감시인 검토 큐(#${d.routed_queue_id})로 자동 라우팅되었습니다.</p>` : "";
+  box.innerHTML = `<div class="card">
+     ${riskBadge(d.risk)} <span class="muted">검색 신뢰도 ${d.confidence}</span>
+     <pre>${esc(d.answer)}</pre>
+     <div>${d.sources.map(s=>`<div class="src">▸ ${esc(s.source)} — ${esc(s.title)} (${esc(s.category)})</div>`).join("")}</div>
+     <details style="margin-top:8px"><summary class="muted">리스크 판정 근거</summary>
+        <ul>${d.risk.reasons.map(r=>`<li class="muted">${esc(r)}</li>`).join("")}</ul></details>
+     ${routed}
+   </div>`;
+}
+
+// ------- ② 문구 검토 -------
+async function doCopy(){
+  const t = document.getElementById("copy-input").value.trim();
+  if(!t) return;
+  const box = document.getElementById("copy-result"); box.innerHTML = "검토 중...";
+  const d = await post("/api/review-copy", {text:t});
+  let routed = d.routed_queue_id ? `<p style="color:var(--hi)">⚠ 고위험으로 준법감시인 검토 큐(#${d.routed_queue_id})로 라우팅되었습니다.</p>` : "";
+  const findings = d.findings.length ? d.findings.map(f=>`
+     <div class="finding ${f.severity==='high'?'':'medium'}">
+       <b>[${f.severity==='high'?'중대':'주의'}] ${esc(f.message)}</b><br>
+       <span class="muted">관련 법령: ${esc(f.law)} / 탐지: ${esc(f.matched)}</span><br>
+       💡 수정안: ${esc(f.suggestion)}
+     </div>`).join("") : `<p class="lo">위반 소지가 발견되지 않았습니다.</p>`;
+  box.innerHTML = `<div class="card">${riskBadge(d.risk)} &nbsp; <b>${esc(d.verdict)}</b>
+     ${findings} ${routed}</div>`;
+}
+
+// ------- ③ 체크리스트 -------
+async function doChecklist(){
+  const type = document.getElementById("check-type").value;
+  const box = document.getElementById("check-result"); box.innerHTML = "생성 중...";
+  const d = await get("/api/checklist?transaction_type="+encodeURIComponent(type));
+  box.innerHTML = `<div class="card"><b>${esc(type)}</b> 거래 필수 준수사항 (${d.items.length}건)
+     ${d.items.map((it,i)=>`<label class="chk"><input type="checkbox">
+        <span>${esc(it.item)} ${it.required?'<span class="req">[필수]</span>':''}
+        <br><span class="muted">근거: ${esc(it.law)}</span></span></label>`).join("")}
+   </div>`;
+}
+
+// ------- ④ 규제 모니터링 -------
+async function doUpdates(){
+  const dept = document.getElementById("mon-dept").value;
+  const box = document.getElementById("mon-result"); box.innerHTML = "조회 중...";
+  const d = await get("/api/regulatory-updates" + (dept?("?dept="+encodeURIComponent(dept)):""));
+  box.innerHTML = d.updates.length ? d.updates.map(u=>`
+     <div class="card">
+       <span class="badge ${u.severity==='high'?'b-hi':'b-mid'}">${u.severity==='high'?'중요':'참고'}</span>
+       <b> ${esc(u.title)}</b>
+       <div class="muted">${esc(u.date)} · ${esc(u.agency)} · 대상: ${u.target_depts.join(", ")}</div>
+       <p style="margin:6px 0 0">${esc(u.summary)}</p>
+     </div>`).join("") : "<p class='muted'>해당 부서 알림이 없습니다.</p>";
+}
+
+// ------- ⑤ 검토 큐 -------
+async function doQueue(){
+  const box = document.getElementById("queue-result"); box.innerHTML = "조회 중...";
+  const d = await get("/api/review-queue");
+  if(!d.queue.length){ box.innerHTML = "<p class='muted'>검토 대기 항목이 없습니다.</p>"; return; }
+  box.innerHTML = d.queue.slice().reverse().map(q=>`
+     <div class="card">
+       ${riskBadge(q.risk)} <span class="badge ${q.status==='승인'?'b-lo':q.status==='반려'?'b-hi':'b-mid'}">${q.status}</span>
+       <span class="muted"> #${q.id} · ${q.kind} · ${esc(q.user)} · ${q.time}</span>
+       <pre>${esc(q.content)}</pre>
+       ${q.status==='대기' ? `
+         <input id="cmt-${q.id}" placeholder="검토 의견(선택)" style="margin-bottom:6px">
+         <div class="row">
+           <button class="go small" onclick="decide(${q.id},'승인')">승인</button>
+           <button class="go small" style="background:var(--hi)" onclick="decide(${q.id},'반려')">반려</button>
+         </div>`
+         : `<div class="muted">처리자: ${esc(q.reviewer||'')} · ${esc(q.decided_at||'')} · 의견: ${esc(q.comment||'-')}</div>`}
+     </div>`).join("");
+}
+async function decide(id, decision){
+  const cmt = (document.getElementById("cmt-"+id)||{}).value || "";
+  await post("/api/review-decide", {queue_id:id, decision, comment:cmt});
+  doQueue();
+}
+
+// ------- ⑥ 감사증적 -------
+async function doAudit(){
+  const box = document.getElementById("audit-result"); box.innerHTML = "조회 중...";
+  const d = await get("/api/audit-trail");
+  if(!d.events.length){ box.innerHTML = "<p class='muted'>기록이 없습니다.</p>"; return; }
+  box.innerHTML = `<table><tr><th>#</th><th>시각</th><th>행위</th><th>사용자</th><th>상세</th></tr>
+     ${d.events.map(e=>`<tr><td>${e.id}</td><td>${e.time}</td><td>${e.action}</td>
+       <td>${esc(e.user)}</td><td class="muted">${esc(JSON.stringify(e.detail,null,0))}</td></tr>`).join("")}
+   </table>`;
+}
+</script>
+</body>
+</html>

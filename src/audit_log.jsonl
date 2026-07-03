@@ -1,0 +1,7 @@
+{"id": 2, "time": "2026-07-02 15:14:49", "action": "ROUTE", "user": "마케팅담당자", "detail": {"queue_id": 1, "kind": "COPY_REVIEW", "risk_level": "고위험"}}
+{"id": 3, "time": "2026-07-02 15:14:49", "action": "REJECT", "user": "준법감시인", "detail": {"queue_id": 1, "comment": "위반"}}
+{"id": 1, "time": "2026-07-02 15:16:47", "action": "QUERY", "user": "영업점직원", "detail": {"query": "대출을 조건으로 예금 가입을 권유해도 되나요?", "risk_level": "중위험", "confidence": 1.0}}
+{"id": 2, "time": "2026-07-02 15:16:47", "action": "COPY_REVIEW", "user": "마케팅담당자", "detail": {"text": "누구나 무조건 승인! 업계 최저금리, 원금보장 확정수익 펀드", "findings": 5, "risk_level": "고위험"}}
+{"id": 4, "time": "2026-07-02 15:16:47", "action": "ROUTE", "user": "마케팅담당자", "detail": {"queue_id": 3, "kind": "COPY_REVIEW", "risk_level": "고위험"}}
+{"id": 5, "time": "2026-07-02 15:17:14", "action": "CHECKLIST", "user": "영업점직원", "detail": {"transaction_type": "투자상품", "items": 5}}
+{"id": 6, "time": "2026-07-02 15:17:14", "action": "APPROVE", "user": "준법감시인", "detail": {"queue_id": 3, "comment": "확인"}}
