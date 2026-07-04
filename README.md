@@ -593,7 +593,7 @@ jb-compliance-ai-agent/
 
 > 이번 단계에서 할 일: 미리 준비된 디자인 기준을 `brand/DESIGN.md`에 채워 넣습니다.
 
-https://getdesign.md/에서 `DESIGN.md` 내용을 복사해 `brand/DESIGN.md`에 붙여넣습니다. 이 단계가 필요한 이유는, 디자인 기준을 AI가 매번 새로 상상하지 않게 하기 위해서입니다. `DESIGN.md`에는 최소한 아래 내용이 들어가면 좋습니다.
+https://getdesign.md/ 에서 `DESIGN.md` 내용을 복사해 `brand/DESIGN.md`에 붙여넣습니다. 이 단계가 필요한 이유는, 디자인 기준을 AI가 매번 새로 상상하지 않게 하기 위해서입니다. `DESIGN.md`에는 최소한 아래 내용이 들어가면 좋습니다.
 
 | 기준 | 예시 |
 |---|---|
